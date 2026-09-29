@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4K Studio – Free 4K Video &amp; Image Upscaler and Text Remover for Windows</title>
+<meta name="description" content="4K Studio is a free Windows app that converts videos and images to 4K, enhances quality with AI, and removes text and watermarks. Exports files that open in CapCut, Premiere, After Effects and DaVinci.">
+<meta name="keywords" content="4K upscaler, video to 4K, AI upscale, image upscaler, remove text from video, remove watermark, free, Windows, CapCut, Premiere">
+<meta property="og:title" content="4K Studio – Free 4K Upscaler &amp; Text Remover">
+<meta property="og:description" content="Turn videos and images into 4K, enhance them with AI and remove text – free, runs on your own PC.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0e0f13">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%236c8cff'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='700' font-size='26' fill='white' text-anchor='middle'%3E4K%3C/text%3E%3C/svg%3E">
+<style>
+  :root { --bg:#0e0f13; --card:#171922; --line:#2a2d3a; --text:#eef0f6; --muted:#9aa0b4; --accent:#6c8cff; --accent2:#a78bfa; --ok:#3ecf8e; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui, "Segoe UI", Arial, sans-serif; line-height:1.6; }
+  a { color:inherit; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+  header { display:flex; justify-content:space-between; align-items:center; padding:20px 0; }
+  .logo { display:flex; align-items:center; gap:10px; font-weight:700; font-size:18px; text-decoration:none; }
+  .logo i { width:34px; height:34px; border-radius:9px; background:var(--accent); display:grid; place-items:center; font-style:normal; font-size:13px; }
+  header nav a { color:var(--muted); text-decoration:none; margin-left:22px; font-size:15px; }
+  header nav a:hover { color:var(--text); }
+  .hero { text-align:center; padding:70px 0 60px; }
+  .pill { display:inline-block; border:1px solid var(--line); color:var(--muted); border-radius:99px; padding:6px 14px; font-size:13px; margin-bottom:22px; }
+  h1 { font-size:clamp(36px, 6vw, 64px); line-height:1.08; margin:0 0 18px; letter-spacing:-1.5px; }
+  h1 span { background:linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .lead { font-size:clamp(17px, 2.2vw, 20px); color:var(--muted); max-width:640px; margin:0 auto 34px; }
+  .btn { display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:12px; background:var(--accent);
+         color:#fff; font-weight:700; font-size:17px; text-decoration:none; transition:transform .15s, box-shadow .15s; }
+  .btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px #6c8cff55; }
+  .btn.ghost { background:transparent; border:1px solid var(--line); color:var(--text); font-weight:600; }
+  .cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .small { color:var(--muted); font-size:13px; margin-top:14px; }
+  /* app mockup */
+  .mock { margin:60px auto 0; max-width:760px; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; text-align:left;
+          box-shadow:0 30px 80px #0008; }
+  .mock .bar { display:flex; gap:6px; margin-bottom:14px; }
+  .mock .bar b { width:11px; height:11px; border-radius:50%; background:#2f3242; }
+  .mock .tabs { display:flex; gap:6px; background:#0e0f13; border-radius:10px; padding:5px; margin-bottom:14px; }
+  .mock .tabs span { flex:1; text-align:center; padding:9px; border-radius:8px; font-size:14px; color:var(--muted); font-weight:600; }
+  .mock .tabs span.on { background:var(--accent); color:#fff; }
+  .mock .row { display:flex; gap:8px; }
+  .mock .input { flex:1; background:#0b0c10; border:1px solid var(--line); border-radius:9px; padding:12px; color:var(--muted); font-size:14px; overflow:hidden; white-space:nowrap; }
+  .mock .go { background:var(--accent); border-radius:9px; padding:12px 16px; font-weight:600; font-size:14px; }
+  .mock .prog { height:8px; background:#0003; border:1px solid var(--line); border-radius:99px; margin:16px 0 8px; overflow:hidden; }
+  .mock .prog i { display:block; height:100%; width:72%; background:linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .mock .meta { display:flex; justify-content:space-between; color:var(--muted); font-size:13px; }
+  section { padding:70px 0; }
+  h2 { font-size:clamp(28px, 4vw, 40px); margin:0 0 12px; text-align:center; letter-spacing:-.5px; }
+  .sub { text-align:center; color:var(--muted); margin:0 auto 44px; max-width:600px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px; }
+  .card .ic { font-size:30px; margin-bottom:10px; }
+  .card h3 { margin:0 0 8px; font-size:20px; }
+  .card p { margin:0; color:var(--muted); }
+  .steps { counter-reset:s; }
+  .steps .card h3::before { counter-increment:s; content:counter(s); display:inline-grid; place-items:center; width:30px; height:30px; border-radius:50%;
+                            background:var(--accent); color:#fff; font-size:15px; margin-right:10px; }
+  .editors { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:30px; }
+  .editors span { border:1px solid var(--line); border-radius:99px; padding:8px 16px; color:var(--muted); font-size:14px; }
+  .req li { margin:8px 0; color:var(--muted); } .req li b { color:var(--text); }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 20px; margin-bottom:10px; }
+  summary { cursor:pointer; font-weight:600; }
+  details p { color:var(--muted); margin:10px 0 0; }
+  .final { text-align:center; background:linear-gradient(135deg, #6c8cff22, #a78bfa22); border:1px solid var(--line); border-radius:22px; padding:56px 20px; }
+  footer { color:var(--muted); font-size:13px; text-align:center; padding:40px 0 50px; }
+  @media (max-width:640px) { header nav { display:none; } .mock .tabs span { font-size:12px; padding:8px 4px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="logo" href="#"><i>4K</i> 4K Studio</a>
+    <nav><a href="#features">Features</a><a href="#how">How it works</a><a href="#faq">FAQ</a></nav>
+  </header>
+
+  <div class="hero">
+    <div class="pill">🆓 Free · Windows · Runs on your own PC</div>
+    <h1>Turn any video or image<br>into <span>stunning 4K</span></h1>
+    <p class="lead">Paste a link or drop a file. 4K Studio downloads it, upscales it with AI and removes unwanted text –
+      then gives you a file that opens in every editing app.</p>
+    <div class="cta">
+      <a class="btn" href="4K-Studio.zip" download>⬇ Download for Windows</a>
+      <a class="btn ghost" href="#how">How it works</a>
+    </div>
+    <p class="small">Free download · ~20 KB installer package · Windows 10 / 11</p>
+
+    <div class="mock" aria-hidden="true">
+      <div class="bar"><b></b><b></b><b></b></div>
+      <div class="tabs"><span class="on">🎬 Video Download</span><span>🖼️ Image Download</span><span>✂️ Remove Text</span></div>
+      <div class="row"><div class="input">https://www.example.com/my-video</div><div class="go">Get 4K</div></div>
+      <div class="prog"><i></i></div>
+      <div class="meta"><span>Encoding 4K… 1920x1080 → 3840x2160</span><span>72%</span></div>
+    </div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <h2>Everything in one place</h2>
+    <p class="sub">Three tools, one simple app. No watermarks, no sign-up, no uploads to someone else's server.</p>
+    <div class="grid">
+      <div class="card"><div class="ic">🎬</div><h3>Video to 4K</h3>
+        <p>Paste a video link and get a 4K MP4. Uses your graphics card, so a 10-minute 4K video is ready in about 5 minutes.</p></div>
+      <div class="card"><div class="ic">🖼️</div><h3>Image to 4K with AI</h3>
+        <p>Download images from a link or drop your own. Real-ESRGAN AI sharpens details and cleans up blur and compression.</p></div>
+      <div class="card"><div class="ic">✂️</div><h3>Remove text</h3>
+        <p>Erase captions, watermarks and logos from images and videos. Auto-detect the text or mark it yourself with the mouse.</p></div>
+      <div class="card"><div class="ic">✨</div><h3>AI enhancement</h3>
+        <p>Special modes for real footage and for animation bring low-quality videos up to 4K with cleaner, sharper frames.</p></div>
+      <div class="card"><div class="ic">🎞️</div><h3>Editor-ready files</h3>
+        <p>H.264 MP4 with constant frame rate and 48 kHz audio – drops straight into your timeline without crashing or lagging.</p></div>
+      <div class="card"><div class="ic">🔒</div><h3>Private by design</h3>
+        <p>Everything runs on your computer. Your files never leave your PC.</p></div>
+    </div>
+    <div class="editors"><span>CapCut</span><span>Premiere Pro</span><span>After Effects</span><span>DaVinci Resolve</span><span>Final Cut (via Windows)</span><span>Vegas</span></div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>Up and running in 3 steps</h2>
+    <p class="sub">No technical knowledge needed.</p>
+    <div class="grid steps">
+      <div class="card"><h3>Download</h3><p>Click <b>Download for Windows</b>, then right-click the ZIP and choose <b>Extract All</b>.</p></div>
+      <div class="card"><h3>Install</h3><p>Double-click <b>install.bat</b>. It sets everything up automatically (about 500 MB, a few minutes).</p></div>
+      <div class="card"><h3>Create</h3><p>Double-click <b>start.bat</b>. 4K Studio opens in your browser – paste a link and go.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap" style="max-width:760px">
+    <h2>System requirements</h2>
+    <ul class="req">
+      <li><b>Windows 10 or 11</b> (64-bit)</li>
+      <li><b>NVIDIA graphics card</b> recommended for fast 4K (GTX 1060 or newer). Works without one, just slower.</li>
+      <li><b>~1 GB</b> of free disk space for the app, plus space for your 4K files</li>
+      <li><b>Internet connection</b> for the one-time install and for downloading from links</li>
+    </ul>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap" style="max-width:760px">
+    <h2>FAQ</h2>
+    <details><summary>Is it really free?</summary><p>Yes. No subscription, no watermark, no account.</p></details>
+    <details><summary>Windows says "Windows protected your PC". Is that normal?</summary>
+      <p>Yes – Windows shows this for any new script downloaded from the internet. Click <b>More info → Run anyway</b>.</p></details>
+    <details><summary>Can AI make a blurry 240p video look like real 4K?</summary>
+      <p>It helps a lot – it removes noise and compression and sharpens edges – but it can't invent details that were never filmed. The better the source, the better the result.</p></details>
+    <details><summary>Where are my files saved?</summary>
+      <p>You download each result from the app, and a copy is also kept in the <b>outputs</b> folder inside the 4K Studio folder.</p></details>
+    <details><summary>Can I download any video?</summary>
+      <p>Only download videos you own or have permission to use, and respect each site's terms of service and copyright.</p></details>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="final">
+    <h2>Ready to go 4K?</h2>
+    <p class="sub" style="margin-bottom:26px">Free for Windows. Set up in minutes.</p>
+    <a class="btn" href="4K-Studio.zip" download>⬇ Download 4K Studio</a>
+  </div>
+  <footer>4K Studio · Free video &amp; image tools for creators<br>Uses FFmpeg, Real-ESRGAN and LaMa (open-source).</footer>
+</div>
+</body>
+</html>
