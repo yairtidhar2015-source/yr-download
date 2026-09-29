@@ -3,169 +3,258 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>4K Studio – Free 4K Video &amp; Image Upscaler and Text Remover for Windows</title>
-<meta name="description" content="4K Studio is a free Windows app that converts videos and images to 4K, enhances quality with AI, and removes text and watermarks. Exports files that open in CapCut, Premiere, After Effects and DaVinci.">
-<meta name="keywords" content="4K upscaler, video to 4K, AI upscale, image upscaler, remove text from video, remove watermark, free, Windows, CapCut, Premiere">
-<meta property="og:title" content="4K Studio – Free 4K Upscaler &amp; Text Remover">
-<meta property="og:description" content="Turn videos and images into 4K, enhance them with AI and remove text – free, runs on your own PC.">
+<title>4K Studio – Free AI Image Upscaler to 4K &amp; Text Remover Online</title>
+<meta name="description" content="Upscale images to 4K with AI and remove text or watermarks from photos – free, online, right in your browser. Get the free Windows app for 4K video downloads.">
+<meta name="keywords" content="upscale image to 4K, AI upscaler online free, remove text from image, remove watermark, 4K video, Real-ESRGAN, free">
+<meta property="og:title" content="4K Studio – Free AI 4K Upscaler &amp; Text Remover">
+<meta property="og:description" content="Turn images into 4K with AI and remove text – free, in your browser. Windows app for 4K video.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://yairtidhar2015-source.github.io/yr-download/">
+<meta property="og:image" content="https://yairtidhar2015-source.github.io/yr-download/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yairtidhar2015-source.github.io/yr-download/share.jpg">
 <meta name="theme-color" content="#0e0f13">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%236c8cff'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='700' font-size='26' fill='white' text-anchor='middle'%3E4K%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="favicon.png">
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.webgpu.min.js"></script>
 <style>
-  :root { --bg:#0e0f13; --card:#171922; --line:#2a2d3a; --text:#eef0f6; --muted:#9aa0b4; --accent:#6c8cff; --accent2:#a78bfa; --ok:#3ecf8e; }
+  :root { --bg:#0e0f13; --card:#171922; --line:#2a2d3a; --text:#eef0f6; --muted:#9aa0b4; --accent:#6c8cff; --accent2:#a78bfa; --ok:#3ecf8e; --err:#ff6b6b; }
   * { box-sizing:border-box; }
   html { scroll-behavior:smooth; }
   body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui, "Segoe UI", Arial, sans-serif; line-height:1.6; }
   a { color:inherit; }
+  [hidden] { display:none !important; }
   .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
-  header { display:flex; justify-content:space-between; align-items:center; padding:20px 0; }
+
+  /* top download strip */
+  .strip { background:linear-gradient(90deg, #6c8cff, #a78bfa); color:#fff; text-align:center; font-size:14px; padding:9px 16px; }
+  .strip a { font-weight:700; margin-left:6px; }
+
+  header { display:flex; justify-content:space-between; align-items:center; padding:16px 0; gap:14px; }
   .logo { display:flex; align-items:center; gap:10px; font-weight:700; font-size:18px; text-decoration:none; }
-  .logo i { width:34px; height:34px; border-radius:9px; background:var(--accent); display:grid; place-items:center; font-style:normal; font-size:13px; }
-  header nav a { color:var(--muted); text-decoration:none; margin-left:22px; font-size:15px; }
-  header nav a:hover { color:var(--text); }
-  .hero { text-align:center; padding:70px 0 60px; }
-  .pill { display:inline-block; border:1px solid var(--line); color:var(--muted); border-radius:99px; padding:6px 14px; font-size:13px; margin-bottom:22px; }
-  h1 { font-size:clamp(36px, 6vw, 64px); line-height:1.08; margin:0 0 18px; letter-spacing:-1.5px; }
+  .logo img { border-radius:9px; }
+  .hdr-right { display:flex; align-items:center; gap:18px; }
+  .hdr-right nav a { color:var(--muted); text-decoration:none; font-size:15px; margin-left:18px; }
+  .hdr-right nav a:hover { color:var(--text); }
+
+  .btn { display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:11px; border:0; background:var(--accent);
+         color:#fff; font-weight:700; font-size:15px; text-decoration:none; cursor:pointer; font-family:inherit; transition:transform .15s, box-shadow .15s; white-space:nowrap; }
+  .btn:hover { transform:translateY(-1px); box-shadow:0 8px 24px #6c8cff44; }
+  .btn.big { padding:16px 28px; font-size:17px; border-radius:13px; }
+  .btn.ghost { background:transparent; border:1px solid var(--line); color:var(--muted); font-weight:600; }
+  .btn.ghost:hover { box-shadow:none; color:var(--text); }
+  .btn:disabled { opacity:.5; cursor:default; transform:none; }
+
+  .hero { text-align:center; padding:26px 0 30px; }
+  .hero .logo-big { width:min(170px, 45vw); height:auto; border-radius:26px; box-shadow:0 20px 60px #ff8a0030; margin-bottom:18px; }
+  h1 { font-size:clamp(32px, 5.5vw, 56px); line-height:1.1; margin:0 0 14px; letter-spacing:-1.2px; }
   h1 span { background:linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .lead { font-size:clamp(17px, 2.2vw, 20px); color:var(--muted); max-width:640px; margin:0 auto 34px; }
-  .btn { display:inline-flex; align-items:center; gap:10px; padding:16px 28px; border-radius:12px; background:var(--accent);
-         color:#fff; font-weight:700; font-size:17px; text-decoration:none; transition:transform .15s, box-shadow .15s; }
-  .btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px #6c8cff55; }
-  .btn.ghost { background:transparent; border:1px solid var(--line); color:var(--text); font-weight:600; }
-  .cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-  .small { color:var(--muted); font-size:13px; margin-top:14px; }
-  /* app mockup */
-  .mock { margin:60px auto 0; max-width:760px; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; text-align:left;
-          box-shadow:0 30px 80px #0008; }
-  .mock .bar { display:flex; gap:6px; margin-bottom:14px; }
-  .mock .bar b { width:11px; height:11px; border-radius:50%; background:#2f3242; }
-  .mock .tabs { display:flex; gap:6px; background:#0e0f13; border-radius:10px; padding:5px; margin-bottom:14px; }
-  .mock .tabs span { flex:1; text-align:center; padding:9px; border-radius:8px; font-size:14px; color:var(--muted); font-weight:600; }
-  .mock .tabs span.on { background:var(--accent); color:#fff; }
-  .mock .row { display:flex; gap:8px; }
-  .mock .input { flex:1; background:#0b0c10; border:1px solid var(--line); border-radius:9px; padding:12px; color:var(--muted); font-size:14px; overflow:hidden; white-space:nowrap; }
-  .mock .go { background:var(--accent); border-radius:9px; padding:12px 16px; font-weight:600; font-size:14px; }
-  .mock .prog { height:8px; background:#0003; border:1px solid var(--line); border-radius:99px; margin:16px 0 8px; overflow:hidden; }
-  .mock .prog i { display:block; height:100%; width:72%; background:linear-gradient(90deg, var(--accent), var(--accent2)); }
-  .mock .meta { display:flex; justify-content:space-between; color:var(--muted); font-size:13px; }
-  section { padding:70px 0; }
-  h2 { font-size:clamp(28px, 4vw, 40px); margin:0 0 12px; text-align:center; letter-spacing:-.5px; }
-  .sub { text-align:center; color:var(--muted); margin:0 auto 44px; max-width:600px; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px; }
-  .card .ic { font-size:30px; margin-bottom:10px; }
-  .card h3 { margin:0 0 8px; font-size:20px; }
+  .lead { font-size:clamp(16px, 2vw, 19px); color:var(--muted); max-width:640px; margin:0 auto; }
+
+  /* app */
+  .app { background:var(--card); border:1px solid var(--line); border-radius:20px; padding:18px; box-shadow:0 30px 80px #0007; }
+  .apptabs { display:flex; gap:6px; background:#0e0f13; border-radius:12px; padding:5px; margin-bottom:16px; }
+  .apptabs button { flex:1; background:transparent; border:0; color:var(--muted); padding:12px 6px; border-radius:9px; font-size:15px;
+                    font-weight:600; cursor:pointer; font-family:inherit; }
+  .apptabs button.on { background:var(--accent); color:#fff; }
+  .drop { border:2px dashed var(--line); border-radius:14px; padding:46px 16px; text-align:center; cursor:pointer; color:var(--muted); transition:.15s; }
+  .drop:hover, .drop.over { border-color:var(--accent); color:var(--text); background:#6c8cff0d; }
+  .drop b { display:block; font-size:18px; color:var(--text); margin-bottom:4px; }
+  .modes { display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .modes label { flex:1; min-width:160px; border:1px solid var(--line); border-radius:10px; padding:11px 12px; cursor:pointer; }
+  .modes label:has(input:checked) { border-color:var(--accent); background:#6c8cff14; }
+  .modes small { display:block; color:var(--muted); }
+  .hint { color:var(--muted); font-size:13px; margin:10px 0 0; }
+  .bar { height:10px; background:#0003; border:1px solid var(--line); border-radius:99px; overflow:hidden; margin:16px 0 8px; }
+  .bar i { display:block; height:100%; width:0; background:linear-gradient(90deg, var(--accent), var(--accent2)); transition:width .2s; }
+  .line { display:flex; justify-content:space-between; gap:12px; color:var(--muted); font-size:14px; flex-wrap:wrap; }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+  .err { color:var(--err); margin:0 0 10px; white-space:pre-wrap; }
+  .stage { position:relative; user-select:none; touch-action:none; cursor:crosshair; line-height:0; }
+  .stage img { width:100%; border-radius:10px; }
+  .box { position:absolute; border:2px solid #ff4d6d; background:#ff4d6d33; border-radius:3px; cursor:pointer; }
+  .box:hover { background:#ff4d6d66; }
+  .toolbar { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; align-items:center; }
+  .badge { font-size:12px; padding:3px 9px; border-radius:99px; border:1px solid var(--line); color:var(--muted); }
+  .compare { position:relative; line-height:0; border-radius:10px; overflow:hidden; background:#000; }
+  .compare img { width:100%; display:block; }
+  .compare .before-wrap { position:absolute; inset:0 auto 0 0; overflow:hidden; border-right:2px solid #fff; }
+  .compare .before-wrap img { height:100%; width:auto; max-width:none; }
+  .compare input { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:ew-resize; margin:0; }
+  .compare .tag { position:absolute; top:10px; background:#000a; color:#fff; font-size:12px; padding:4px 8px; border-radius:6px; line-height:1.2; }
+  .compare .tag.l { left:10px; } .compare .tag.r { right:10px; }
+  .pc-only { text-align:center; padding:30px 10px; }
+  .pc-only .ic { font-size:44px; }
+  .pc-only p { color:var(--muted); max-width:520px; margin:8px auto 20px; }
+
+  section { padding:64px 0 10px; }
+  h2 { font-size:clamp(26px, 3.6vw, 36px); margin:0 0 10px; text-align:center; letter-spacing:-.5px; }
+  .sub { text-align:center; color:var(--muted); margin:0 auto 34px; max-width:620px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; }
+  .card .ic { font-size:28px; margin-bottom:8px; }
+  .card h3 { margin:0 0 6px; font-size:19px; }
   .card p { margin:0; color:var(--muted); }
+  .card.hl { border-color:#6c8cff66; background:linear-gradient(160deg, #6c8cff18, var(--card) 60%); }
   .steps { counter-reset:s; }
-  .steps .card h3::before { counter-increment:s; content:counter(s); display:inline-grid; place-items:center; width:30px; height:30px; border-radius:50%;
-                            background:var(--accent); color:#fff; font-size:15px; margin-right:10px; }
-  .editors { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:30px; }
-  .editors span { border:1px solid var(--line); border-radius:99px; padding:8px 16px; color:var(--muted); font-size:14px; }
-  .req li { margin:8px 0; color:var(--muted); } .req li b { color:var(--text); }
-  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 20px; margin-bottom:10px; }
+  .steps .card h3::before { counter-increment:s; content:counter(s); display:inline-grid; place-items:center; width:28px; height:28px; border-radius:50%;
+                            background:var(--accent); color:#fff; font-size:14px; margin-right:10px; }
+  .shot { max-width:820px; margin:30px auto 0; border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+  .shot img { width:100%; display:block; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:15px 20px; margin-bottom:10px; }
   summary { cursor:pointer; font-weight:600; }
   details p { color:var(--muted); margin:10px 0 0; }
-  .final { text-align:center; background:linear-gradient(135deg, #6c8cff22, #a78bfa22); border:1px solid var(--line); border-radius:22px; padding:56px 20px; }
-  footer { color:var(--muted); font-size:13px; text-align:center; padding:40px 0 50px; }
-  @media (max-width:640px) { header nav { display:none; } .mock .tabs span { font-size:12px; padding:8px 4px; } }
+  .final { text-align:center; background:linear-gradient(135deg, #6c8cff22, #a78bfa22); border:1px solid var(--line); border-radius:22px; padding:50px 20px; margin-top:64px; }
+  footer { color:var(--muted); font-size:13px; text-align:center; padding:36px 0 46px; }
+  @media (max-width:720px) { .hdr-right nav { display:none; } .apptabs button { font-size:13px; } .btn.dl-top span { display:none; } }
 </style>
 </head>
 <body>
+<div class="strip">💻 Want 4K video downloads from links? <a href="4K-Studio.zip" download>Get the free Windows app →</a></div>
+
 <div class="wrap">
   <header>
-    <a class="logo" href="#"><i>4K</i> 4K Studio</a>
-    <nav><a href="#features">Features</a><a href="#how">How it works</a><a href="#faq">FAQ</a></nav>
+    <a class="logo" href="#"><img src="favicon.png" alt="" width="34" height="34"> 4K Studio</a>
+    <div class="hdr-right">
+      <nav><a href="#tools">Tools</a><a href="#pc">PC app</a><a href="#faq">FAQ</a></nav>
+      <a class="btn dl-top" href="4K-Studio.zip" download>⬇ <span>Download for PC</span></a>
+    </div>
   </header>
 
   <div class="hero">
-    <div class="pill">🆓 Free · Windows · Runs on your own PC</div>
-    <h1>Turn any video or image<br>into <span>stunning 4K</span></h1>
-    <p class="lead">Paste a link or drop a file. 4K Studio downloads it, upscales it with AI and removes unwanted text –
-      then gives you a file that opens in every editing app.</p>
-    <div class="cta">
-      <a class="btn" href="4K-Studio.zip" download>⬇ Download for Windows</a>
-      <a class="btn ghost" href="#how">How it works</a>
-    </div>
-    <p class="small">Free download · ~20 KB installer package · Windows 10 / 11</p>
+    <img class="logo-big" src="logo.jpg" alt="4K Studio logo" width="600" height="600">
+    <h1>Make it <span>4K</span>. Make it clean.</h1>
+    <p class="lead">Upscale images to 4K with AI and erase text or watermarks – free, right here in your browser.
+      Your files never leave your device.</p>
+  </div>
 
-    <div class="mock" aria-hidden="true">
-      <div class="bar"><b></b><b></b><b></b></div>
-      <div class="tabs"><span class="on">🎬 Video Download</span><span>🖼️ Image Download</span><span>✂️ Remove Text</span></div>
-      <div class="row"><div class="input">https://www.example.com/my-video</div><div class="go">Get 4K</div></div>
-      <div class="prog"><i></i></div>
-      <div class="meta"><span>Encoding 4K… 1920x1080 → 3840x2160</span><span>72%</span></div>
+  <!-- ===== APP ===== -->
+  <div class="app" id="tools">
+    <div class="apptabs">
+      <button data-tab="up" class="on">🖼️ Image to 4K</button>
+      <button data-tab="tx">✂️ Remove Text</button>
+      <button data-tab="vid">🎬 Video &amp; Links</button>
+    </div>
+
+    <!-- Image to 4K -->
+    <div class="pane" id="pane-up">
+      <div id="up-start">
+        <div class="drop" id="up-drop"><b>Drop an image here</b>or click to choose · JPG, PNG, WEBP</div>
+        <input type="file" id="up-file" accept="image/*" hidden>
+        <div class="modes">
+          <label><input type="radio" name="upmodel" value="photo" checked> ✨ Photo <small>People, places, real life</small></label>
+          <label><input type="radio" name="upmodel" value="anime"> 🎨 Drawing / Anime <small>Cartoons, art, logos</small></label>
+        </div>
+        <div class="modes">
+          <label><input type="radio" name="upquality" value="best" checked> 💎 Best quality <small>Same AI as the PC app · slower</small></label>
+          <label><input type="radio" name="upquality" value="fast"> ⚡ Fast <small>Lighter AI · seconds</small></label>
+        </div>
+        <p class="hint" id="gpu-note"></p>
+      </div>
+      <div id="up-progress" hidden></div>
+      <div id="up-result" hidden></div>
+    </div>
+
+    <!-- Remove text -->
+    <div class="pane" id="pane-tx" hidden>
+      <div class="drop" id="tx-drop"><b>Drop an image here</b>or click to choose · then mark the text to erase</div>
+      <input type="file" id="tx-file" accept="image/*" hidden>
+      <div id="tx-edit" hidden>
+        <div class="stage" id="stage"><img id="stage-img" alt="" draggable="false"></div>
+        <p class="hint">Drag over the text to mark it · click a red box to remove it</p>
+        <div class="toolbar">
+          <button class="btn ghost" id="auto-detect" type="button">🔍 Auto-detect text</button>
+          <button class="btn ghost" id="clear-boxes" type="button">Clear</button>
+          <span class="badge" id="box-count">0 marks</span>
+        </div>
+        <div class="actions">
+          <button class="btn" id="tx-go" type="button">✂️ Remove text</button>
+          <button class="btn ghost" type="button" onclick="location.reload()">Another image</button>
+        </div>
+        <p class="hint">The first time, the AI model (~200 MB) downloads once and is then remembered by your browser.</p>
+      </div>
+      <div id="tx-progress" hidden></div>
+      <div id="tx-result" hidden></div>
+    </div>
+
+    <!-- Video (PC app) -->
+    <div class="pane" id="pane-vid" hidden>
+      <div class="pc-only">
+        <div class="ic">🎬</div>
+        <h3>Video downloads &amp; 4K video need the free PC app</h3>
+        <p>Browsers can't download videos from other sites or convert long 4K videos. The Windows app does it all:
+          paste a link → get a 4K MP4 that opens in CapCut, Premiere, After Effects and DaVinci.</p>
+        <a class="btn big" href="4K-Studio.zip" download>⬇ Download for Windows</a>
+      </div>
     </div>
   </div>
 </div>
 
-<section id="features">
-  <div class="wrap">
-    <h2>Everything in one place</h2>
-    <p class="sub">Three tools, one simple app. No watermarks, no sign-up, no uploads to someone else's server.</p>
-    <div class="grid">
-      <div class="card"><div class="ic">🎬</div><h3>Video to 4K</h3>
-        <p>Paste a video link and get a 4K MP4. Uses your graphics card, so a 10-minute 4K video is ready in about 5 minutes.</p></div>
-      <div class="card"><div class="ic">🖼️</div><h3>Image to 4K with AI</h3>
-        <p>Download images from a link or drop your own. Real-ESRGAN AI sharpens details and cleans up blur and compression.</p></div>
-      <div class="card"><div class="ic">✂️</div><h3>Remove text</h3>
-        <p>Erase captions, watermarks and logos from images and videos. Auto-detect the text or mark it yourself with the mouse.</p></div>
-      <div class="card"><div class="ic">✨</div><h3>AI enhancement</h3>
-        <p>Special modes for real footage and for animation bring low-quality videos up to 4K with cleaner, sharper frames.</p></div>
-      <div class="card"><div class="ic">🎞️</div><h3>Editor-ready files</h3>
-        <p>H.264 MP4 with constant frame rate and 48 kHz audio – drops straight into your timeline without crashing or lagging.</p></div>
-      <div class="card"><div class="ic">🔒</div><h3>Private by design</h3>
-        <p>Everything runs on your computer. Your files never leave your PC.</p></div>
-    </div>
-    <div class="editors"><span>CapCut</span><span>Premiere Pro</span><span>After Effects</span><span>DaVinci Resolve</span><span>Final Cut (via Windows)</span><span>Vegas</span></div>
-  </div>
-</section>
-
-<section id="how">
-  <div class="wrap">
-    <h2>Up and running in 3 steps</h2>
-    <p class="sub">No technical knowledge needed.</p>
-    <div class="grid steps">
-      <div class="card"><h3>Download</h3><p>Click <b>Download for Windows</b>, then right-click the ZIP and choose <b>Extract All</b>.</p></div>
-      <div class="card"><h3>Install</h3><p>Double-click <b>install.bat</b>. It sets everything up automatically (about 500 MB, a few minutes).</p></div>
-      <div class="card"><h3>Create</h3><p>Double-click <b>start.bat</b>. 4K Studio opens in your browser – paste a link and go.</p></div>
-    </div>
-  </div>
-</section>
-
 <section>
-  <div class="wrap" style="max-width:760px">
-    <h2>System requirements</h2>
-    <ul class="req">
-      <li><b>Windows 10 or 11</b> (64-bit)</li>
-      <li><b>NVIDIA graphics card</b> recommended for fast 4K (GTX 1060 or newer). Works without one, just slower.</li>
-      <li><b>~1 GB</b> of free disk space for the app, plus space for your 4K files</li>
-      <li><b>Internet connection</b> for the one-time install and for downloading from links</li>
-    </ul>
+  <div class="wrap">
+    <h2>What you can do</h2>
+    <p class="sub">Two tools work right here in the browser. The PC app adds video and link downloads.</p>
+    <div class="grid">
+      <div class="card"><div class="ic">🖼️</div><h3>Image to 4K</h3>
+        <p>Real-ESRGAN AI rebuilds detail, removes blur and compression, and outputs a sharp 4K PNG.</p></div>
+      <div class="card"><div class="ic">✂️</div><h3>Remove text &amp; watermarks</h3>
+        <p>Auto-detect text or mark it yourself. LaMa AI fills the area with a natural-looking background.</p></div>
+      <div class="card"><div class="ic">🔒</div><h3>100% private</h3>
+        <p>Everything runs on your device. Images are never uploaded to any server.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pc">
+  <div class="wrap">
+    <h2>Get the PC app for 4K video</h2>
+    <p class="sub">Paste a link, get a 4K video. Uses your graphics card – a 10-minute 4K video is ready in about 5 minutes.</p>
+    <div class="grid">
+      <div class="card hl"><div class="ic">🎬</div><h3>Video download in 4K</h3>
+        <p>Paste a video link and get an editor-ready 4K MP4, with optional AI enhancement for low-quality videos.</p></div>
+      <div class="card hl"><div class="ic">🖼️</div><h3>Images from links</h3>
+        <p>Download images from Instagram, Pinterest, X and more, upscaled to 4K.</p></div>
+      <div class="card hl"><div class="ic">✂️</div><h3>Remove text from video</h3>
+        <p>Erase captions, logos and watermarks from whole videos.</p></div>
+    </div>
+    <div class="shot"><img src="preview.jpg" alt="The 4K Studio PC app" width="1200" height="630" loading="lazy"></div>
+
+    <div class="grid steps" style="margin-top:30px">
+      <div class="card"><h3>Download</h3><p>Click <b>Download for PC</b>, then right-click the ZIP → <b>Extract All</b>.</p></div>
+      <div class="card"><h3>Install</h3><p>Double-click <b>install.bat</b>. It sets everything up by itself (about 500 MB).</p></div>
+      <div class="card"><h3>Create</h3><p>Double-click <b>start.bat</b>. The app opens in your browser – paste a link and go.</p></div>
+    </div>
+    <p class="sub" style="margin-top:22px">Windows 10/11 · NVIDIA graphics card recommended (works without one, just slower)</p>
   </div>
 </section>
 
 <section id="faq">
   <div class="wrap" style="max-width:760px">
     <h2>FAQ</h2>
-    <details><summary>Is it really free?</summary><p>Yes. No subscription, no watermark, no account.</p></details>
-    <details><summary>Windows says "Windows protected your PC". Is that normal?</summary>
-      <p>Yes – Windows shows this for any new script downloaded from the internet. Click <b>More info → Run anyway</b>.</p></details>
-    <details><summary>Can AI make a blurry 240p video look like real 4K?</summary>
-      <p>It helps a lot – it removes noise and compression and sharpens edges – but it can't invent details that were never filmed. The better the source, the better the result.</p></details>
-    <details><summary>Where are my files saved?</summary>
-      <p>You download each result from the app, and a copy is also kept in the <b>outputs</b> folder inside the 4K Studio folder.</p></details>
-    <details><summary>Can I download any video?</summary>
-      <p>Only download videos you own or have permission to use, and respect each site's terms of service and copyright.</p></details>
+    <details><summary>Is it free?</summary><p>Yes. No account, no watermark, no subscription.</p></details>
+    <details><summary>Why is the first run slow?</summary>
+      <p>The AI model downloads once (5 MB for 4K upscaling, about 200 MB for text removal). After that your browser remembers it.
+        Chrome or Edge on a computer with a graphics card is fastest.</p></details>
+    <details><summary>Are my images uploaded?</summary><p>No. All processing happens in your browser on your own device.</p></details>
+    <details><summary>Windows says "Windows protected your PC" when installing the app</summary>
+      <p>Windows shows this for any new script from the internet. Click <b>More info → Run anyway</b>.</p></details>
+    <details><summary>Can AI turn a tiny blurry picture into a perfect 4K photo?</summary>
+      <p>It helps a lot – sharper edges, less noise and compression – but it can't invent details that were never captured.</p></details>
+    <details><summary>Can I download any video with the PC app?</summary>
+      <p>Only download videos you own or have permission to use, and respect each site's terms and copyright.</p></details>
   </div>
 </section>
 
 <div class="wrap">
   <div class="final">
-    <h2>Ready to go 4K?</h2>
-    <p class="sub" style="margin-bottom:26px">Free for Windows. Set up in minutes.</p>
-    <a class="btn" href="4K-Studio.zip" download>⬇ Download 4K Studio</a>
+    <h2>Want the full power?</h2>
+    <p class="sub" style="margin-bottom:24px">4K video downloads, AI video enhancement and text removal from videos.</p>
+    <a class="btn big" href="4K-Studio.zip" download>⬇ Download 4K Studio for Windows</a>
   </div>
-  <footer>4K Studio · Free video &amp; image tools for creators<br>Uses FFmpeg, Real-ESRGAN and LaMa (open-source).</footer>
+  <footer>4K Studio · Free tools for creators<br>Powered by open-source Real-ESRGAN, LaMa, PP-OCR, ONNX Runtime and FFmpeg.</footer>
 </div>
+
+<script src="app.js"></script>
 </body>
 </html>
