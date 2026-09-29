@@ -132,10 +132,10 @@
   <!-- ===== APP ===== -->
   <div class="app" id="tools">
     <div class="apptabs">
-      <button data-tab="up" class="on">🖼️ Image to 4K</button>
-      <button data-tab="vd">🎬 Video to 4K</button>
+      <button data-tab="vid" class="on">🔗 Video Download</button>
+      <button data-tab="up">🖼️ Image to 4K</button>
+      <button data-tab="vd">🎬 Video File to 4K</button>
       <button data-tab="tx">✂️ Remove Text</button>
-      <button data-tab="vid">🔗 From a Link</button>
     </div>
 
     <!-- Video to 4K -->
@@ -165,7 +165,7 @@
     </div>
 
     <!-- Image to 4K -->
-    <div class="pane" id="pane-up">
+    <div class="pane" id="pane-up" hidden>
       <div id="up-start">
         <div class="drop" id="up-drop"><b>Drop an image here</b>or click to choose · JPG, PNG, WEBP</div>
         <input type="file" id="up-file" accept="image/*" hidden>
@@ -205,15 +205,35 @@
       <div id="tx-result" hidden></div>
     </div>
 
-    <!-- Video (PC app) -->
-    <div class="pane" id="pane-vid" hidden>
-      <div class="pc-only">
-        <div class="ic">🎬</div>
-        <h3>Downloading from a link needs the free PC app</h3>
-        <p>Browsers aren't allowed to download videos from other sites. Have the video file already? Use the
-          <b>Video to 4K</b> tab. To paste a link, get the Windows app: link → 4K MP4 that opens in any editor.</p>
-        <a class="btn big" href="4K-Studio.zip" download>⬇ Download for Windows</a>
+    <!-- Video download from a link (runs through the 4K Studio app on the visitor's PC) -->
+    <div class="pane" id="pane-vid">
+      <div id="ln-start">
+        <form class="row" id="ln-form" style="display:flex;gap:10px">
+          <input type="url" id="ln-url" placeholder="https://www.youtube.com/watch?v=..." required
+                 style="flex:1;min-width:0;background:#0b0c10;border:1px solid var(--line);color:var(--text);border-radius:11px;padding:14px;font-size:15px;font-family:inherit">
+          <button class="btn" type="submit">Get 4K</button>
+        </form>
+        <div class="modes">
+          <label><input type="radio" name="lnmode" value="fast" checked> ⚡ Fast <small>A few minutes · smart resize to 4K</small></label>
+          <label><input type="radio" name="lnmode" value="real"> ✨ AI · Real footage <small>For low-quality videos · slow</small></label>
+          <label><input type="radio" name="lnmode" value="anime"> 🎨 AI · Animation <small>For cartoons · faster</small></label>
+        </div>
+        <p class="hint">If the video already exists in 4K, it's downloaded in 4K directly and converted to an editing format – no quality loss.</p>
+        <p class="hint" id="ln-status">Checking for the 4K Studio app…</p>
       </div>
+      <div id="ln-setup" class="pc-only" hidden>
+        <div class="ic">💻</div>
+        <h3>One-time setup: install the free 4K Studio app</h3>
+        <p>Link downloads run through a small app on your computer – that's what makes them fast, full quality and never blocked.
+          Install it once, start it, and this page will use it automatically.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="btn big" href="4K-Studio.zip" download>⬇ Download for Windows</a>
+          <button class="btn ghost" type="button" id="ln-recheck">I started it – try again</button>
+        </div>
+        <p class="hint">Extract the ZIP → double-click <b>install.bat</b> (once) → double-click <b>start.bat</b>.
+          If Chrome asks to allow access to devices on your network, click <b>Allow</b>.</p>
+      </div>
+      <div id="ln-job" hidden></div>
     </div>
   </div>
 </div>

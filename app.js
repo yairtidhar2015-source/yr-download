@@ -382,6 +382,76 @@ dropZone($('up-drop'), $('up-file'), async file => {
   } catch (e) { $('up-progress').hidden = true; fail($('up-result'), e); }
 });
 
+// Video download from a link: handled by the 4K Studio app running on the visitor's own PC.
+const APP = 'http://localhost:8765';
+const appApi = (path, body) => fetch(APP + path, body === undefined ? {} : { method: 'POST', body: JSON.stringify(body) })
+  .then(r => r.json());
+
+async function checkApp() {
+  $('ln-status').textContent = 'Checking for the 4K Studio app…';
+  try {
+    const h = await fetch(APP + '/health', { signal: AbortSignal.timeout(2500) }).then(r => r.json());
+    $('ln-setup').hidden = true;
+    $('ln-status').textContent = '✅ 4K Studio app connected' + (h.gpu ? ' · ⚡ GPU active' : '');
+    return true;
+  } catch {
+    $('ln-status').textContent = '';
+    return false;
+  }
+}
+checkApp();
+$('ln-recheck').onclick = async () => {
+  if (!(await checkApp())) alert('The app isn\'t running yet. Double-click start.bat in the 4K Studio folder, then try again.');
+};
+
+const LN_STEPS = [['download', 'Download'], ['extract', 'Extract frames'], ['ai', 'AI enhance'], ['encode', 'Encode 4K']];
+const LN_LABEL = { queued: 'Waiting…', download: 'Downloading…', extract: 'Extracting frames…', ai: 'Enhancing with AI…', encode: 'Encoding 4K…' };
+
+$('ln-form').onsubmit = async e => {
+  e.preventDefault();
+  if (!(await checkApp())) { $('ln-setup').hidden = false; $('ln-setup').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+  let res;
+  try {
+    res = await appApi('/video', { url: $('ln-url').value, mode: document.querySelector('input[name=lnmode]:checked').value });
+  } catch { return alert('Could not reach the 4K Studio app. Make sure start.bat is running.'); }
+  if (res.error) return alert(res.error);
+  const id = res.id, el = $('ln-job');
+  $('ln-start').hidden = true;
+  el.hidden = false;
+  el.innerHTML = `<div class="t" style="font-weight:600;word-break:break-word">Starting…</div>
+    <div class="steps" style="display:flex;gap:6px;margin:12px 0 4px;font-size:13px;flex-wrap:wrap"></div>
+    <div class="bar"><i></i></div><div class="line"><span class="ph"></span><span class="pc"></span></div>
+    <div class="line meta" style="margin-top:6px"></div>
+    <div class="actions"><button class="btn ghost cancel" type="button">Cancel</button></div>`;
+  el.querySelector('.cancel').onclick = () => appApi('/cancel/' + id, {}).catch(() => {});
+  const started = Date.now();
+  const timer = setInterval(async () => {
+    let j;
+    try { j = await appApi('/status/' + id); } catch { return; }
+    if (j.title) el.querySelector('.t').textContent = j.title;
+    const idx = LN_STEPS.findIndex(s => s[0] === j.phase), skipped = j.skipped || [];
+    el.querySelector('.steps').innerHTML = LN_STEPS.map(([k, t], i) => {
+      const skip = skipped.includes(k), ok = j.phase === 'done' || i < idx, on = i === idx;
+      return `<span class="badge" style="${on ? 'border-color:var(--accent);color:var(--text)' : ok && !skip ? 'color:var(--ok)' : ''}${skip ? ';opacity:.45;text-decoration:line-through' : ''}">${ok && !skip ? '✓ ' : ''}${t}</span>`;
+    }).join('');
+    const p = j.progress || 0;
+    el.querySelector('.bar i').style.width = p + '%';
+    el.querySelector('.pc').textContent = p.toFixed(1) + '%';
+    el.querySelector('.ph').textContent = (LN_LABEL[j.phase] || '') + (j.phase === 'ai' && j.frames_total ? ` ${j.frames_done}/${j.frames_total} frames` : '');
+    el.querySelector('.meta').innerHTML = (j.src_res ? `<span>${j.src_res} → ${j.out_res || ''}</span>` : '') +
+      (j.eta ? `<span>About ${Math.ceil(j.eta / 60)} min left</span>` : '');
+    if (j.status === 'done') {
+      clearInterval(timer);
+      const mins = Math.max(1, Math.round((Date.now() - started) / 60000));
+      el.querySelector('.ph').textContent = `✅ Done in ~${mins} min · ${(j.size / 1e9 >= 1 ? (j.size / 1e9).toFixed(2) + ' GB' : (j.size / 1e6).toFixed(0) + ' MB')}`;
+      el.querySelector('.actions').innerHTML = `<a class="btn" href="${APP}/download/${id}">⬇ Download 4K video</a>
+        <button class="btn ghost" type="button" onclick="location.reload()">Another video</button>`;
+    }
+    if (j.status === 'error') { clearInterval(timer); fail(el, new Error(j.error)); }
+    if (j.status === 'cancelled') location.reload();
+  }, 1000);
+};
+
 // Video to 4K
 let vidFile = null;
 dropZone($('vd-drop'), $('vd-file'), file => {
