@@ -144,7 +144,15 @@
         <div class="drop" id="vd-drop"><b>Drop a video here</b>or click to choose · MP4, MOV, WEBM</div>
         <input type="file" id="vd-file" accept="video/*" hidden>
         <div class="modes">
-          <label><input type="radio" name="vdmode" value="fast" checked> ⚡ Fast 4K <small>High-quality resize · minutes</small></label>
+          <label><input type="radio" name="vdres" value="2160" checked> 💎 4K <small>3840×2160</small></label>
+          <label><input type="radio" name="vdres" value="1080"> 📺 1080p <small>1920×1080 · faster, smaller file</small></label>
+        </div>
+        <div class="modes">
+          <label><input type="radio" name="vdfps" value="orig" checked> 🎞️ Original FPS <small>Keeps the video's frame rate</small></label>
+          <label><input type="radio" name="vdfps" value="60"> 🚀 60 FPS <small>For editing at 60fps · motion stays as in the original</small></label>
+        </div>
+        <div class="modes">
+          <label><input type="radio" name="vdmode" value="fast" checked> ⚡ Fast <small>GPU resize · about 1–3× the video length</small></label>
           <label><input type="radio" name="vdmode" value="photo"> ✨ AI · Real footage <small>For low-quality clips · slow, best for short videos</small></label>
           <label><input type="radio" name="vdmode" value="anime"> 🎨 AI · Animation <small>Cartoons · faster than real footage</small></label>
         </div>

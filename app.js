@@ -154,36 +154,33 @@ async function upscale(img, modelKey, report, size) {
 // ---------- video to 4K (WebCodecs via Mediabunny) ----------
 const MEDIABUNNY_URL = 'https://cdn.jsdelivr.net/npm/mediabunny@1.61.0/dist/bundles/mediabunny.min.mjs';
 
-async function videoTo4K(file, mode, report) {
+async function videoTo4K(file, mode, report, { res = 2160, fps60 = false } = {}) {
   if (!('VideoEncoder' in window)) throw new Error('This browser can\'t encode video. Use Chrome or Edge on a computer, or the PC app.');
   const MB = await import(MEDIABUNNY_URL);
   const input = new MB.Input({ source: new MB.BlobSource(file), formats: MB.ALL_FORMATS });
   const track = await input.getPrimaryVideoTrack();
   if (!track) throw new Error('No video found in this file');
   const W = track.displayWidth, H = track.displayHeight;
-  const fit = Math.min((W >= H ? 3840 : 2160) / W, (W >= H ? 2160 : 3840) / H);
+  const long = res === 2160 ? 3840 : 1920;  // 4K: 3840x2160, 1080p: 1920x1080 (portrait videos are turned around)
+  const fit = Math.min((W >= H ? long : res) / W, (W >= H ? res : long) / H);
   const OW = Math.round(W * fit / 2) * 2, OH = Math.round(H * fit / 2) * 2;
   if (!(await MB.canEncodeVideo('avc', { width: OW, height: OH }))) {
-    throw new Error('Your browser/graphics card can\'t encode 4K H.264. Try Chrome or Edge, or use the PC app.');
+    throw new Error(`Your browser/graphics card can't encode ${res === 2160 ? '4K' : '1080p'} H.264. Try Chrome or Edge, or use the PC app.`);
   }
-  const fps = Math.min(60, Math.round((await track.computePacketStats(120)).averagePacketRate) || 30);
+  const srcFps = Math.round((await track.computePacketStats(120)).averagePacketRate) || 30;
+  const fps = fps60 ? 60 : Math.min(60, srcFps);
   const duration = await input.computeDuration();
-  if (duration * 40e6 / 8 > 3e9) throw new Error('This video is too long to convert in the browser (it would be over 3 GB). Use the PC app for long videos.');
+  const mbps = (res === 2160 ? 40e6 : 12e6) * fps / 30;
+  if (duration * mbps / 8 > 3e9) throw new Error('This video is too long to convert in the browser (it would be over 3 GB). Use the PC app for long videos.');
 
-  // Frame processing: high-quality resize, or AI enhancement (Real-ESRGAN compact) for low-res footage.
-  const canvas = new OffscreenCanvas(OW, OH), ctx = canvas.getContext('2d');
-  ctx.imageSmoothingQuality = 'high';
+  // Fast: resize is done by the encoder pipeline on the GPU. AI: every frame through Real-ESRGAN (compact).
   let frameCanvas = null;
   if (mode !== 'fast') {
     report('Loading AI model…', 0);
     await getSession(mode, p => report('Downloading AI model…', p * 100));
   }
   const started = performance.now();
-  const process = async sample => {
-    if (mode === 'fast') {
-      sample.draw(ctx, 0, 0, OW, OH);
-      return canvas;
-    }
+  const aiProcess = async sample => {
     frameCanvas ??= document.createElement('canvas');
     frameCanvas.width = sample.displayWidth; frameCanvas.height = sample.displayHeight;
     sample.draw(frameCanvas.getContext('2d'), 0, 0);
@@ -194,14 +191,16 @@ async function videoTo4K(file, mode, report) {
   const conversion = await MB.Conversion.init({
     input, output,
     video: { codec: 'avc', quality: MB.QUALITY_HIGH, frameRate: fps, keyFrameInterval: 1, forceTranscode: true,
-             process, processedWidth: OW, processedHeight: OH },
+             hardwareAcceleration: 'prefer-hardware',
+             ...(mode === 'fast' ? { width: OW, height: OH, fit: 'fill' }
+                                 : { process: aiProcess, processedWidth: OW, processedHeight: OH }) },
     audio: { codec: 'aac', quality: MB.QUALITY_HIGH, sampleRate: 48000 },
     showWarnings: false,
   });
   if (!conversion.isValid) throw new Error('This video format isn\'t supported in the browser. Try an MP4 file, or use the PC app.');
   conversion.onProgress = p => {
     const secs = (performance.now() - started) / 1000;
-    report(mode === 'fast' ? 'Converting to 4K…' : 'Enhancing every frame with AI…', p * 100, p > 0.01 ? secs / p * (1 - p) : 0);
+    report(mode === 'fast' ? `Converting to ${res === 2160 ? '4K' : '1080p'}…` : 'Enhancing every frame with AI…', p * 100, p > 0.01 ? secs / p * (1 - p) : 0);
   };
   videoTo4K.cancel = () => conversion.cancel();
   await conversion.execute();
@@ -400,14 +399,16 @@ $('vd-go').onclick = async () => {
   $('vd-progress').appendChild(cancel);
   try {
     const mode = document.querySelector('input[name=vdmode]:checked').value;
-    const { blob, width, height } = await videoTo4K(vidFile, mode, report);
+    const res = +document.querySelector('input[name=vdres]:checked').value;
+    const fps60 = document.querySelector('input[name=vdfps]:checked').value === '60';
+    const { blob, width, height } = await videoTo4K(vidFile, mode, report, { res, fps60 });
     $('vd-progress').hidden = true;
     const url = URL.createObjectURL(blob);
     const el = $('vd-result');
     el.hidden = false;
     el.innerHTML = `<video src="${url}" controls style="width:100%;border-radius:10px;background:#000"></video>
       <div class="line" style="margin-top:10px"><span>✅ ${width}×${height} · H.264 MP4 · ${(blob.size / 1e6).toFixed(1)} MB</span></div>
-      <div class="actions"><a class="btn" download="${baseName(vidFile)}_4K.mp4" href="${url}">⬇ Download 4K video</a>
+      <div class="actions"><a class="btn" download="${baseName(vidFile)}_${res === 2160 ? '4K' : '1080p'}${fps60 ? '60' : ''}.mp4" href="${url}">⬇ Download video</a>
         <button class="btn ghost" type="button" onclick="location.reload()">Another video</button></div>`;
   } catch (e) { $('vd-progress').hidden = true; fail($('vd-result'), e); }
 };
