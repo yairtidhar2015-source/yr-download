@@ -133,8 +133,27 @@
   <div class="app" id="tools">
     <div class="apptabs">
       <button data-tab="up" class="on">🖼️ Image to 4K</button>
+      <button data-tab="vd">🎬 Video to 4K</button>
       <button data-tab="tx">✂️ Remove Text</button>
-      <button data-tab="vid">🎬 Video &amp; Links</button>
+      <button data-tab="vid">🔗 From a Link</button>
+    </div>
+
+    <!-- Video to 4K -->
+    <div class="pane" id="pane-vd" hidden>
+      <div id="vd-start">
+        <div class="drop" id="vd-drop"><b>Drop a video here</b>or click to choose · MP4, MOV, WEBM</div>
+        <input type="file" id="vd-file" accept="video/*" hidden>
+        <div class="modes">
+          <label><input type="radio" name="vdmode" value="fast" checked> ⚡ Fast 4K <small>High-quality resize · minutes</small></label>
+          <label><input type="radio" name="vdmode" value="photo"> ✨ AI · Real footage <small>For low-quality clips · slow, best for short videos</small></label>
+          <label><input type="radio" name="vdmode" value="anime"> 🎨 AI · Animation <small>Cartoons · faster than real footage</small></label>
+        </div>
+        <div class="actions"><button class="btn" id="vd-go" type="button" disabled>🎬 Convert to 4K</button></div>
+        <p class="hint">Exports a 4K H.264 MP4 with audio that opens in CapCut, Premiere, After Effects and DaVinci.
+          Runs in your browser – Chrome or Edge on a computer works best. For long videos or video links, use the PC app.</p>
+      </div>
+      <div id="vd-progress" hidden></div>
+      <div id="vd-result" hidden></div>
     </div>
 
     <!-- Image to 4K -->
@@ -182,9 +201,9 @@
     <div class="pane" id="pane-vid" hidden>
       <div class="pc-only">
         <div class="ic">🎬</div>
-        <h3>Video downloads &amp; 4K video need the free PC app</h3>
-        <p>Browsers can't download videos from other sites or convert long 4K videos. The Windows app does it all:
-          paste a link → get a 4K MP4 that opens in CapCut, Premiere, After Effects and DaVinci.</p>
+        <h3>Downloading from a link needs the free PC app</h3>
+        <p>Browsers aren't allowed to download videos from other sites. Have the video file already? Use the
+          <b>Video to 4K</b> tab. To paste a link, get the Windows app: link → 4K MP4 that opens in any editor.</p>
         <a class="btn big" href="4K-Studio.zip" download>⬇ Download for Windows</a>
       </div>
     </div>

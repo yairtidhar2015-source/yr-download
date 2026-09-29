@@ -106,10 +106,11 @@ function loadImage(file) {
 }
 
 // ---------- AI upscale to 4K ----------
-async function upscale(img, modelKey, report) {
-  const W = img.naturalWidth, H = img.naturalHeight;
-  const scale = Math.max(W, H) >= TARGET_LONG_SIDE ? 1 : TARGET_LONG_SIDE / Math.max(W, H);
-  const OW = Math.round(W * scale), OH = Math.round(H * scale);
+async function upscale(img, modelKey, report, size) {
+  // img: <img> or any canvas image source; size: optional exact output [w, h] (used for video frames)
+  const W = img.naturalWidth || img.width, H = img.naturalHeight || img.height;
+  const scale = size ? size[0] / W : Math.max(W, H) >= TARGET_LONG_SIDE ? 1 : TARGET_LONG_SIDE / Math.max(W, H);
+  const OW = size ? size[0] : Math.round(W * scale), OH = size ? size[1] : Math.round(H * scale);
   const out = canvasOf(OW, OH), octx = out.getContext('2d');
   octx.imageSmoothingQuality = 'high';
   if (scale === 1) { octx.drawImage(img, 0, 0); return out; }
@@ -148,6 +149,63 @@ async function upscale(img, modelKey, report) {
     await sleep();
   }
   return out;
+}
+
+// ---------- video to 4K (WebCodecs via Mediabunny) ----------
+const MEDIABUNNY_URL = 'https://cdn.jsdelivr.net/npm/mediabunny@1.61.0/dist/bundles/mediabunny.min.mjs';
+
+async function videoTo4K(file, mode, report) {
+  if (!('VideoEncoder' in window)) throw new Error('This browser can\'t encode video. Use Chrome or Edge on a computer, or the PC app.');
+  const MB = await import(MEDIABUNNY_URL);
+  const input = new MB.Input({ source: new MB.BlobSource(file), formats: MB.ALL_FORMATS });
+  const track = await input.getPrimaryVideoTrack();
+  if (!track) throw new Error('No video found in this file');
+  const W = track.displayWidth, H = track.displayHeight;
+  const fit = Math.min((W >= H ? 3840 : 2160) / W, (W >= H ? 2160 : 3840) / H);
+  const OW = Math.round(W * fit / 2) * 2, OH = Math.round(H * fit / 2) * 2;
+  if (!(await MB.canEncodeVideo('avc', { width: OW, height: OH }))) {
+    throw new Error('Your browser/graphics card can\'t encode 4K H.264. Try Chrome or Edge, or use the PC app.');
+  }
+  const fps = Math.min(60, Math.round((await track.computePacketStats(120)).averagePacketRate) || 30);
+  const duration = await input.computeDuration();
+  if (duration * 40e6 / 8 > 3e9) throw new Error('This video is too long to convert in the browser (it would be over 3 GB). Use the PC app for long videos.');
+
+  // Frame processing: high-quality resize, or AI enhancement (Real-ESRGAN compact) for low-res footage.
+  const canvas = new OffscreenCanvas(OW, OH), ctx = canvas.getContext('2d');
+  ctx.imageSmoothingQuality = 'high';
+  let frameCanvas = null;
+  if (mode !== 'fast') {
+    report('Loading AI model…', 0);
+    await getSession(mode, p => report('Downloading AI model…', p * 100));
+  }
+  const started = performance.now();
+  const process = async sample => {
+    if (mode === 'fast') {
+      sample.draw(ctx, 0, 0, OW, OH);
+      return canvas;
+    }
+    frameCanvas ??= document.createElement('canvas');
+    frameCanvas.width = sample.displayWidth; frameCanvas.height = sample.displayHeight;
+    sample.draw(frameCanvas.getContext('2d'), 0, 0);
+    return upscale(frameCanvas, mode, () => {}, [OW, OH]);
+  };
+
+  const output = new MB.Output({ format: new MB.Mp4OutputFormat({ fastStart: 'in-memory' }), target: new MB.BufferTarget() });
+  const conversion = await MB.Conversion.init({
+    input, output,
+    video: { codec: 'avc', quality: MB.QUALITY_HIGH, frameRate: fps, keyFrameInterval: 1, forceTranscode: true,
+             process, processedWidth: OW, processedHeight: OH },
+    audio: { codec: 'aac', quality: MB.QUALITY_HIGH, sampleRate: 48000 },
+    showWarnings: false,
+  });
+  if (!conversion.isValid) throw new Error('This video format isn\'t supported in the browser. Try an MP4 file, or use the PC app.');
+  conversion.onProgress = p => {
+    const secs = (performance.now() - started) / 1000;
+    report(mode === 'fast' ? 'Converting to 4K…' : 'Enhancing every frame with AI…', p * 100, p > 0.01 ? secs / p * (1 - p) : 0);
+  };
+  videoTo4K.cancel = () => conversion.cancel();
+  await conversion.execute();
+  return { blob: new Blob([output.target.buffer], { type: 'video/mp4' }), width: OW, height: OH };
 }
 
 // ---------- text detection (PP-OCRv3 DB detector) ----------
@@ -324,6 +382,35 @@ dropZone($('up-drop'), $('up-file'), async file => {
     showResult($('up-result'), canvas, baseName(file) + '_4K.png', img);
   } catch (e) { $('up-progress').hidden = true; fail($('up-result'), e); }
 });
+
+// Video to 4K
+let vidFile = null;
+dropZone($('vd-drop'), $('vd-file'), file => {
+  vidFile = file;
+  $('vd-drop').innerHTML = `<b>🎬 ${file.name.replace(/[<>&]/g, '')}</b>${(file.size / 1e6).toFixed(1)} MB · click to choose another`;
+  $('vd-go').disabled = false;
+});
+$('vd-go').onclick = async () => {
+  if (!vidFile) return;
+  $('vd-start').hidden = true;
+  const report = progressUI($('vd-progress'));
+  const cancel = document.createElement('button');
+  cancel.className = 'btn ghost'; cancel.type = 'button'; cancel.textContent = 'Cancel';
+  cancel.onclick = () => { videoTo4K.cancel?.(); location.reload(); };
+  $('vd-progress').appendChild(cancel);
+  try {
+    const mode = document.querySelector('input[name=vdmode]:checked').value;
+    const { blob, width, height } = await videoTo4K(vidFile, mode, report);
+    $('vd-progress').hidden = true;
+    const url = URL.createObjectURL(blob);
+    const el = $('vd-result');
+    el.hidden = false;
+    el.innerHTML = `<video src="${url}" controls style="width:100%;border-radius:10px;background:#000"></video>
+      <div class="line" style="margin-top:10px"><span>✅ ${width}×${height} · H.264 MP4 · ${(blob.size / 1e6).toFixed(1)} MB</span></div>
+      <div class="actions"><a class="btn" download="${baseName(vidFile)}_4K.mp4" href="${url}">⬇ Download 4K video</a>
+        <button class="btn ghost" type="button" onclick="location.reload()">Another video</button></div>`;
+  } catch (e) { $('vd-progress').hidden = true; fail($('vd-result'), e); }
+};
 
 // Remove text
 let txImg = null, txFile = null, boxes = [];
