@@ -389,6 +389,9 @@ const appApi = (path, body) => fetch(APP + path, body === undefined ? {} : { met
 
 async function checkApp() {
   $('ln-status').textContent = 'Checking for the 4K Studio app…';
+  const slow = setTimeout(() => {
+    $('ln-status').textContent = 'If Chrome asks to allow access to apps on this device, click "Allow".';
+  }, 3000);
   try {
     const h = await fetch(APP + '/health', { signal: AbortSignal.timeout(2500) }).then(r => r.json());
     $('ln-setup').hidden = true;
@@ -397,6 +400,8 @@ async function checkApp() {
   } catch {
     $('ln-status').textContent = '';
     return false;
+  } finally {
+    clearTimeout(slow);
   }
 }
 checkApp();
