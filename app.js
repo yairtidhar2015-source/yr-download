@@ -1,4 +1,4 @@
-// 4K Studio web app: AI image upscaling (Real-ESRGAN) and text removal (text detector + LaMa),
+// YR Download web app: AI image upscaling (Real-ESRGAN) and text removal (text detector + LaMa),
 // all running in the visitor's browser with onnxruntime-web. Nothing is uploaded anywhere.
 
 const ORT_VERSION = '1.20.1';
@@ -382,20 +382,20 @@ dropZone($('up-drop'), $('up-file'), async file => {
   } catch (e) { $('up-progress').hidden = true; fail($('up-result'), e); }
 });
 
-// Video download from a link: handled by the 4K Studio app running on the visitor's own PC.
+// Video download from a link: handled by the YR Download app running on the visitor's own PC.
 const APP = 'http://localhost:8765';
 const appApi = (path, body) => fetch(APP + path, body === undefined ? {} : { method: 'POST', body: JSON.stringify(body) })
   .then(r => r.json());
 
 async function checkApp() {
-  $('ln-status').textContent = 'Checking for the 4K Studio app…';
+  $('ln-status').textContent = 'Checking for the YR Download app…';
   const slow = setTimeout(() => {
     $('ln-status').textContent = 'If Chrome asks to allow access to apps on this device, click "Allow".';
   }, 3000);
   try {
     const h = await fetch(APP + '/health', { signal: AbortSignal.timeout(2500) }).then(r => r.json());
     $('ln-setup').hidden = true;
-    $('ln-status').textContent = '✅ 4K Studio app connected' + (h.gpu ? ' · ⚡ GPU active' : '');
+    $('ln-status').textContent = '✅ YR Download app connected' + (h.gpu ? ' · ⚡ GPU active' : '');
     return true;
   } catch {
     $('ln-status').textContent = '';
@@ -406,7 +406,7 @@ async function checkApp() {
 }
 checkApp();
 $('ln-recheck').onclick = async () => {
-  if (!(await checkApp())) alert('The app isn\'t running yet. Double-click start.bat in the 4K Studio folder, then try again.');
+  if (!(await checkApp())) alert('The app isn\'t running yet. Open the YR Download app from your desktop, then try again.');
 };
 
 const LN_STEPS = [['download', 'Download'], ['extract', 'Extract frames'], ['ai', 'AI enhance'], ['encode', 'Encode 4K']];
@@ -418,7 +418,7 @@ $('ln-form').onsubmit = async e => {
   let res;
   try {
     res = await appApi('/video', { url: $('ln-url').value, mode: document.querySelector('input[name=lnmode]:checked').value });
-  } catch { return alert('Could not reach the 4K Studio app. Make sure start.bat is running.'); }
+  } catch { return alert('Could not reach the YR Download app. Open the YR Download app from your desktop first.'); }
   if (res.error) return alert(res.error);
   const id = res.id, el = $('ln-job');
   $('ln-start').hidden = true;
