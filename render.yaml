@@ -1,0 +1,30 @@
+# One-click deploy of SiteForge AI on Render (https://render.com).
+# Deploy: https://render.com/deploy?repo=https://github.com/yairtidhar2015-source/yr-download
+services:
+  - type: web
+    name: siteforge-ai
+    runtime: node
+    plan: free
+    rootDir: siteforge
+    buildCommand: npm ci --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      # Public demo until real keys are added: offline demo AI + simulated payments
+      # (clearly labelled). Set to "false" once ANTHROPIC_API_KEY and PayPal are configured.
+      - key: DEMO_MODE
+        value: "true"
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_WEBHOOK_ID
+        sync: false
+      - key: PAYPAL_MODE
+        value: sandbox

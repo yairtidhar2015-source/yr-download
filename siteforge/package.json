@@ -1,0 +1,20 @@
+{
+  "name": "siteforge-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SiteForge AI – build websites by chatting with AI. Free website editor + one-time AI credit packages.",
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0",
+    "express": "^5.3.0"
+  }
+}

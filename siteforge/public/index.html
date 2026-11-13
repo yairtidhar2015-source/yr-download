@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SiteForge AI – Build your website by chatting</title>
+<meta name="description" content="Describe the website you want and SiteForge AI builds it live. Free website editor, AI credits as one-time purchases – no subscription.">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/landing.css">
+</head>
+<body>
+<div id="nav"></div>
+
+<header class="hero">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <span class="pill-note"><span class="dot"></span> AI website builder · pay once, no subscription</span>
+    <h1>Describe it. <span class="grad-text">Watch it get built.</span></h1>
+    <p class="lead">Chat with AI to create pages, rewrite text, change colors and fonts, draw images and add animations — with a live preview of your website as you talk.</p>
+
+    <form class="hero-chat" id="heroChat" autocomplete="off">
+      <label for="heroPrompt" class="sr-only">Describe your website</label>
+      <textarea id="heroPrompt" rows="3" maxlength="4000" placeholder="A website for my bakery in Haifa called “Golden Crumb” — warm colors, a menu page, opening hours and online orders…"></textarea>
+      <div class="hero-chat-bar">
+        <span class="faint hint">Free account · first website free · AI uses credits</span>
+        <button class="btn btn-primary btn-lg" type="submit">Build my website <span aria-hidden="true">→</span></button>
+      </div>
+    </form>
+    <div class="suggestions" id="heroSuggestions"></div>
+  </div>
+</header>
+
+<section class="demo container" aria-label="Product preview">
+  <div class="demo-frame">
+    <div class="demo-chat">
+      <div class="bubble user">Make the header dark and add a testimonials section with 3 reviews</div>
+      <div class="bubble ai"><b>SiteForge AI</b> Done! I switched the header to a deep navy, and added a testimonials section with three customer reviews below your services.
+        <div class="chips"><span>styles.css</span><span>index.html</span></div><div class="cost">2 credits used</div></div>
+      <div class="bubble user">Now draw a friendly illustration of a croissant for the hero</div>
+      <div class="bubble ai typing"><span></span><span></span><span></span></div>
+    </div>
+    <div class="demo-preview">
+      <div class="browser-bar"><i></i><i></i><i></i><span>goldencrumb.siteforge.app</span></div>
+      <div class="mock-site">
+        <div class="mock-nav"><b>Golden Crumb</b><span>Menu</span><span>Order</span><span>Contact</span></div>
+        <div class="mock-hero"><div><div class="ln w70"></div><div class="ln w50"></div><div class="ln w60 thin"></div><div class="mock-btn"></div></div><div class="mock-art"></div></div>
+        <div class="mock-cards"><div></div><div></div><div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features container">
+  <h2>Everything happens in the chat</h2>
+  <div class="feature-grid">
+    <div class="f"><div class="ic">✨</div><h3>Generate full websites</h3><p>Describe your business and get a complete, responsive site with real copy.</p></div>
+    <div class="f"><div class="ic">📄</div><h3>Add pages</h3><p>“Add a pricing page” — it matches your design and joins the menu automatically.</p></div>
+    <div class="f"><div class="ic">🎨</div><h3>Restyle instantly</h3><p>Colors, fonts, layouts and sections — change anything in plain words.</p></div>
+    <div class="f"><div class="ic">✍️</div><h3>Write your text</h3><p>Headlines, about sections and product descriptions in any language.</p></div>
+    <div class="f"><div class="ic">🖼️</div><h3>Create images</h3><p>AI-drawn vector illustrations placed right where they belong.</p></div>
+    <div class="f"><div class="ic">🎬</div><h3>Animate &amp; interact</h3><p>Scroll effects, sliders, tabs, counters and hover effects on request.</p></div>
+  </div>
+  <p class="muted center">The AI always works on <b>your</b> project — it reads your current pages and changes them, instead of starting over every time.</p>
+</section>
+
+<section class="free container">
+  <div class="split">
+    <div>
+      <span class="eyebrow">Free forever</span>
+      <h2>The website builder is free</h2>
+      <ul class="checks">
+        <li>Register for free and create one website</li>
+        <li>Basic templates to start from</li>
+        <li>Click-to-edit text and images, theme colors &amp; fonts</li>
+        <li>Basic scroll animations</li>
+        <li>Upload your own images</li>
+        <li>Live desktop, tablet and mobile preview</li>
+      </ul>
+    </div>
+    <div>
+      <span class="eyebrow">Pay only for AI</span>
+      <h2>AI credits, one-time</h2>
+      <p class="muted">Buy a credit package once and use it whenever you like. <b>No subscription, credits never expire</b>, and you only pay for AI changes that succeed. Every action shows its exact cost before you send it.</p>
+      <div id="pkgTeaser" class="teaser"></div>
+      <a class="btn btn-ghost" href="/pricing">Full pricing →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="container">
+    <div>© <span id="yr"></span> SiteForge AI</div>
+    <div class="links"><a href="/pricing">Pricing</a><a href="/login">Log in</a><a href="/signup">Create free account</a></div>
+  </div>
+</footer>
+<script type="module" src="/js/landing.js"></script>
+</body>
+</html>

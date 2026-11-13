@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SiteForge Credits</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+<div id="nav"></div>
+<main class="container page">
+  <div id="paymentStatus"></div>
+  <div class="acct-grid">
+    <aside class="card balance-card">
+      <div class="muted">Available AI credits</div>
+      <div class="big" data-credits>–</div>
+      <p class="faint" style="font-size:13px">One-time purchases. Credits never expire.</p>
+      <div id="heldNote" class="faint" style="font-size:13px"></div>
+      <div style="display:grid;gap:8px;margin-top:14px">
+        <button class="btn btn-primary" data-buy-credits type="button">Buy credits</button>
+        <a class="btn btn-ghost" href="/app">Open workspace</a>
+        <button class="btn btn-ghost" id="logout" type="button">Log out</button>
+      </div>
+    </aside>
+    <div>
+      <h2 class="section-title">Credit history</h2>
+      <div class="card" style="padding:0"><div class="table-wrap"><table class="table" id="txTable">
+        <thead><tr><th>Date</th><th>Description</th><th style="text-align:right">Credits</th><th style="text-align:right">Balance</th></tr></thead><tbody></tbody></table></div></div>
+      <h2 class="section-title" style="margin-top:28px">Purchases</h2>
+      <div class="card" style="padding:0"><div class="table-wrap"><table class="table" id="purTable">
+        <thead><tr><th>Date</th><th>Package</th><th>Amount</th><th>Status</th></tr></thead><tbody></tbody></table></div></div>
+    </div>
+  </div>
+</main>
+<script type="module" src="/js/account.js"></script>
+</body>
+</html>

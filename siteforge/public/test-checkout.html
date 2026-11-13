@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Checkout</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+<main class="auth-wrap">
+  <div class="card checkout-card">
+    <span class="badge badge-test">TEST MODE – NO REAL MONEY</span>
+    <h1 style="font-family:var(--font-display);margin:12px 0 6px">Simulated checkout</h1>
+    <p class="muted" style="margin-top:0">This server has no live payment provider configured. This page simulates the provider: the button below makes the server send itself a <b>signed webhook</b> that goes through the same verification and credit-granting code as real payments.</p>
+    <div id="summary"></div>
+    <div id="result"></div>
+    <div class="checkout-actions">
+      <button class="btn btn-primary btn-lg" id="paySuccess" type="button">Simulate successful payment</button>
+      <button class="btn btn-ghost" id="payFail" type="button">Simulate declined payment</button>
+      <a class="btn btn-ghost" href="/account?payment=cancelled">Cancel</a>
+    </div>
+  </div>
+</main>
+<script type="module" src="/js/test-checkout.js"></script>
+</body>
+</html>
