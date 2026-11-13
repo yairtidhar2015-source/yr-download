@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SiteForge Account</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+<div id="nav"></div>
+<main class="auth-wrap">
+  <form class="card auth-card" id="authForm" novalidate>
+    <h1 id="authTitle">Create your free account</h1>
+    <p class="muted" id="authSub" style="margin-top:0">Build one website for free. Buy AI credits only if you want them.</p>
+    <div id="authError" class="alert alert-err" hidden style="margin-bottom:14px"></div>
+    <div class="field" id="nameField"><label for="name">Name</label><input class="input" id="name" name="name" autocomplete="name"></div>
+    <div class="field"><label for="email">Email</label><input class="input" id="email" name="email" type="email" autocomplete="email" required></div>
+    <div class="field"><label for="password">Password</label><input class="input" id="password" name="password" type="password" minlength="8" required></div>
+    <button class="btn btn-primary btn-lg" type="submit" id="authBtn">Create account</button>
+    <div class="auth-switch" id="authSwitch"></div>
+  </form>
+</main>
+<script type="module" src="/js/auth.js"></script>
+</body>
+</html>

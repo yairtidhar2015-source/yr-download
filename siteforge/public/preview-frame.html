@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Preview</title><style>body{margin:0;font:14px system-ui;color:#888;display:grid;place-items:center;height:100vh}</style></head>
+<body>Loading preview…
+<script>
+// Bootstrap only: receives the first document from the editor. Every rendered
+// document contains the SiteForge runtime, which handles later renders.
+window.addEventListener('message', function (e) {
+  if (e.source !== window.parent || !e.data || e.data.type !== 'sf:render') return;
+  document.open(); document.write(e.data.html); document.close();
+});
+window.parent.postMessage({ type: 'sf:ready' }, '*');
+</script>
+</body>
+</html>

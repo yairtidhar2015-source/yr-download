@@ -1,0 +1,41 @@
+.page { padding: 56px 0 90px; }
+.center { text-align: center; }
+.page-head h1 { font-family: var(--font-display); font-size: clamp(32px, 5vw, 54px); letter-spacing: -.03em; line-height: 1.05; margin: 0 0 12px; }
+.page-head { margin-bottom: 44px; }
+.product { margin-bottom: 44px; }
+.product-label { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.product-label h2 { margin: 0; font-family: var(--font-display); font-size: 24px; }
+.product-label p { margin: 0; }
+.num { width: 34px; height: 34px; border-radius: 10px; background: var(--brand-grad); display: grid; place-items: center; font-weight: 800; }
+.free-card { display: grid; grid-template-columns: 140px 1fr auto; gap: 24px; align-items: center; }
+.big { font-family: var(--font-display); font-size: 44px; font-weight: 700; line-height: 1; }
+.checks { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+.checks li { padding-left: 24px; position: relative; color: var(--muted); }
+.checks li::before { content: '✓'; position: absolute; left: 0; color: var(--ok); font-weight: 800; }
+.faq h2 { font-family: var(--font-display); }
+.faq details { border-bottom: 1px solid var(--line); padding: 16px 0; }
+.faq summary { cursor: pointer; font-weight: 600; }
+.faq p { color: var(--muted); margin: 10px 0 0; }
+
+/* Auth */
+.auth-wrap { min-height: calc(100vh - 64px); display: grid; place-items: center; padding: 32px 16px; }
+.auth-card { width: min(420px, 100%); }
+.auth-card h1 { font-family: var(--font-display); margin: 0 0 6px; font-size: 28px; }
+.auth-card .btn { width: 100%; margin-top: 6px; }
+.auth-switch { text-align: center; margin-top: 16px; color: var(--muted); font-size: 14px; }
+
+/* Account */
+.acct-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
+.balance-card .big { font-size: 56px; }
+.section-title { font-family: var(--font-display); font-size: 20px; margin: 0 0 12px; }
+
+/* Test checkout */
+.checkout-card { width: min(460px, 100%); }
+.checkout-card .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.checkout-actions { display: grid; gap: 10px; margin-top: 18px; }
+
+@media (max-width: 860px) {
+  .free-card { grid-template-columns: 1fr; }
+  .checks { grid-template-columns: 1fr; }
+  .acct-grid { grid-template-columns: 1fr; }
+}

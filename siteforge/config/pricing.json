@@ -1,0 +1,21 @@
+{
+  "_comment": "Example prices – edit freely. Prices are in whole shekels (ILS) and converted to agorot internally. Credit costs are charged only after an AI operation succeeds.",
+  "currency": "ILS",
+  "currencySymbol": "₪",
+  "packages": [
+    { "id": "starter",  "name": "Starter",  "credits": 50,   "price": 19,  "tagline": "Try AI on your first site" },
+    { "id": "creator",  "name": "Creator",  "credits": 200,  "price": 49,  "tagline": "Build and polish a full site", "popular": true },
+    { "id": "pro",      "name": "Pro",      "credits": 600,  "price": 99,  "tagline": "Several projects and heavy editing" },
+    { "id": "ultimate", "name": "Ultimate", "credits": 1500, "price": 199, "tagline": "Best value per credit" }
+  ],
+  "operations": {
+    "create_site": { "label": "Generate a whole website",          "credits": 10, "hint": "Builds your site from a description" },
+    "add_page":    { "label": "Add a new page",                    "credits": 5,  "hint": "One new page that matches your site" },
+    "edit":        { "label": "Edit content or structure",         "credits": 2,  "hint": "Add, remove or rework sections" },
+    "restyle":     { "label": "Change colors, fonts or layout",    "credits": 2,  "hint": "Design changes across the site" },
+    "write_text":  { "label": "Write or rewrite text",             "credits": 1,  "hint": "Headlines, about text, product copy" },
+    "image":       { "label": "Create an illustration",            "credits": 4,  "hint": "AI-drawn vector (SVG) image placed on your page" },
+    "animation":   { "label": "Animations & interactive elements", "credits": 3,  "hint": "Scroll effects, sliders, tabs, counters" },
+    "fix":         { "label": "Improve or fix something",          "credits": 2,  "hint": "Bugs, accessibility, mobile layout, polish" }
+  }
+}

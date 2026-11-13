@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SiteForge Workspace</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="workspace">
+<header class="ws-top">
+  <div class="ws-left">
+    <span id="logo"></span>
+    <span class="sep" aria-hidden="true"></span>
+    <input id="projectName" class="project-name" aria-label="Website name" maxlength="80" spellcheck="false">
+    <span id="saveState" class="faint save-state"></span>
+  </div>
+  <div class="ws-right">
+    <span id="aiBadge"></span>
+    <span id="creditSlot"></span>
+    <a class="icon-btn" href="/account" title="Account &amp; credit history" aria-label="Account">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></a>
+  </div>
+</header>
+
+<div class="mobile-tabs" role="tablist">
+  <button class="on" data-mtab="chat" role="tab">AI Chat</button>
+  <button data-mtab="preview" role="tab">Preview</button>
+</div>
+
+<main class="ws-main">
+  <!-- ======================= CHAT ======================= -->
+  <section class="chat" id="chatPane" aria-label="AI chat">
+    <div class="chat-scroll" id="chatScroll">
+      <div class="chat-empty" id="chatEmpty">
+        <div class="orb" aria-hidden="true"></div>
+        <h2>What should we build today?</h2>
+        <p class="muted">Describe your website or the change you want. I read your current site and update it — live.</p>
+        <div class="prompt-grid" id="suggestions"></div>
+      </div>
+      <div class="messages" id="messages"></div>
+    </div>
+
+    <form class="composer" id="composer" autocomplete="off">
+      <div class="composer-box">
+        <textarea id="prompt" rows="3" maxlength="4000" placeholder="Describe a website, a new page, or any change… (Shift+Enter for a new line)"></textarea>
+        <div class="composer-bar">
+          <div class="op-picker">
+            <button type="button" class="op-btn" id="opBtn" aria-haspopup="listbox" aria-expanded="false">
+              <span class="op-auto" id="opAuto">Auto</span><span id="opLabel">Edit content</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="op-menu" id="opMenu" role="listbox" hidden></div>
+          </div>
+          <button type="button" class="icon-btn" id="stopBtn" hidden title="Stop">■</button>
+          <button type="submit" class="btn btn-primary send-btn" id="sendBtn">
+            <span id="sendLabel">Send</span><span class="cost-chip" id="sendCost">2 credits</span>
+          </button>
+        </div>
+      </div>
+      <div class="composer-note" id="composerNote">Credits are deducted only if the change succeeds.</div>
+    </form>
+  </section>
+
+  <!-- ======================= PREVIEW ======================= -->
+  <section class="preview" id="previewPane" aria-label="Website preview">
+    <div class="pv-toolbar">
+      <div class="pages" id="pageTabs" role="tablist"></div>
+      <div class="pv-tools">
+        <div class="seg" role="group" aria-label="Device">
+          <button class="on" data-device="desktop" title="Desktop" aria-label="Desktop"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
+          <button data-device="tablet" title="Tablet" aria-label="Tablet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></button>
+          <button data-device="mobile" title="Mobile" aria-label="Mobile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="3" width="10" height="18" rx="2"/></svg></button>
+        </div>
+        <button class="btn btn-sm btn-ghost" id="editToggle" title="Click text or images in the preview to edit them (free)">✎ Edit</button>
+        <button class="btn btn-sm btn-ghost" id="designBtn" title="Colors, fonts, animations (free)">🎨 Design</button>
+        <button class="btn btn-sm btn-ghost" id="imagesBtn" title="Upload your own images (free)">🖼 Images</button>
+        <button class="icon-btn" id="historyBtn" title="Version history / undo" aria-label="Version history">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg></button>
+        <button class="icon-btn" id="templatesBtn" title="Start over from a template" aria-label="Templates">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+      </div>
+    </div>
+    <div class="edit-banner" id="editBanner" hidden>Edit mode: click any text to type, click an image to replace it. Changes save automatically — free.</div>
+    <div class="pv-stage" id="stage">
+      <div class="pv-device" id="device">
+        <iframe id="frame" title="Website preview" sandbox="allow-scripts" src="/preview-frame"></iframe>
+        <div class="pv-busy" id="pvBusy" hidden><div class="shimmer"></div><span><span class="spinner"></span> AI is updating your site…</span></div>
+      </div>
+    </div>
+
+    <aside class="design-panel" id="designPanel" hidden aria-label="Design settings">
+      <div class="dp-head"><b>Design</b><span class="badge badge-ok">Free</span><button class="icon-btn" id="designClose" aria-label="Close">✕</button></div>
+      <div class="dp-section"><h4>Colors</h4><div class="swatches" id="swatches"></div></div>
+      <div class="dp-section"><h4>Fonts</h4>
+        <label class="dp-row">Headings <select class="input" id="fontHeading"></select></label>
+        <label class="dp-row">Body <select class="input" id="fontBody"></select></label></div>
+      <div class="dp-section"><h4>Corners</h4><input type="range" min="0" max="32" id="radius"><span class="faint" id="radiusVal"></span></div>
+      <div class="dp-section"><h4>Scroll animation</h4><select class="input" id="animSelect"></select></div>
+      <p class="faint dp-tip">Want a whole new look? Ask the AI: “make it feel luxurious with a dark theme”.</p>
+    </aside>
+  </section>
+</main>
+
+<input type="file" id="fileInput" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>
