@@ -41,6 +41,8 @@ export function createApp() {
     next();
   });
 
+  app.get('/healthz', (_req, res) => res.json({ ok: true }));
+
   // ---- Webhooks: raw body, no session, no CSRF header (verified by signature) ----
   app.post('/api/payments/webhooks/:provider', express.text({ type: '*/*', limit: '1mb' }), async (req, res) => {
     try {

@@ -157,5 +157,7 @@ body.workspace { display: flex; flex-direction: column; overflow: hidden; }
   .ws-top { padding: 0 10px; }
   .ws-right { gap: 8px; }
   .pv-tools .btn-sm { padding: 6px 8px; }
+  .pv-tools { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: none; }
+  .pv-toolbar { gap: 6px; }
   .send-btn #sendLabel { display: none; }
 }

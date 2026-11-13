@@ -29,6 +29,22 @@ With no keys set, development mode runs:
 Neither runs in production (`NODE_ENV=production`): without keys, AI and payments are disabled and the UI says so.
 Nothing ever pretends a real payment succeeded.
 
+## Deploy (public URL, works on phones)
+
+GitHub Pages can only host static files, so the app needs a Node host. The repo includes a Render blueprint
+(`render.yaml` at the repo root) and a `Dockerfile` (for Railway, Fly.io or any VPS).
+
+**One click on Render (free):** open
+<https://render.com/deploy?repo=https://github.com/yairtidhar2015-source/yr-download>, sign in with GitHub, press
+**Apply**. You get an `https://siteforge-ai-XXXX.onrender.com` address.
+
+It starts in `DEMO_MODE` (offline demo AI + simulated payments, both clearly labelled) so everyone can try it right away.
+To go live, add `ANTHROPIC_API_KEY` and the PayPal variables in the Render dashboard and set `DEMO_MODE=false`.
+Test payments are never allowed together with a real AI model.
+
+Note: Render's free plan has no persistent disk, so accounts and sites reset when the service restarts. For real users
+choose a paid plan, add a disk mounted at `/data` and set `DATA_DIR=/data`.
+
 ## Going live
 
 ### 1. AI (Claude)

@@ -22,6 +22,10 @@ if (fs.existsSync(envFile)) {
 const env = process.env;
 const int = (v, d) => (v === undefined || v === '' ? d : Number.parseInt(v, 10));
 const isProd = env.NODE_ENV === 'production';
+// DEMO_MODE: a public demo before real keys exist – offline demo AI + simulated
+// payments, clearly labelled in the UI. Automatically ignored for whichever part
+// has real credentials, and test payments are never combined with real AI.
+const demoMode = ['1', 'true', 'yes'].includes(String(env.DEMO_MODE || '').toLowerCase());
 const port = int(env.PORT, 3000);
 const dataDir = path.resolve(env.DATA_DIR || path.join(ROOT, 'data'));
 fs.mkdirSync(path.join(dataDir, 'uploads'), { recursive: true });
@@ -30,8 +34,8 @@ fs.mkdirSync(path.join(dataDir, 'uploads'), { recursive: true });
 // anthropic: real Claude models (needs ANTHROPIC_API_KEY)
 // mock:      offline demo provider for local development only – never in production
 // none:      AI disabled
-let aiProvider = env.AI_PROVIDER || (env.ANTHROPIC_API_KEY ? 'anthropic' : isProd ? 'none' : 'mock');
-if (isProd && aiProvider === 'mock') {
+let aiProvider = env.AI_PROVIDER || (env.ANTHROPIC_API_KEY ? 'anthropic' : isProd && !demoMode ? 'none' : 'mock');
+if (isProd && !demoMode && aiProvider === 'mock') {
   console.warn('[config] AI_PROVIDER=mock is not allowed in production – AI disabled.');
   aiProvider = 'none';
 }
@@ -44,20 +48,22 @@ const paypal = {
   mode: env.PAYPAL_MODE === 'live' ? 'live' : 'sandbox',
 };
 const paypalReady = Boolean(paypal.clientId && paypal.clientSecret && paypal.webhookId);
-let paymentProvider = env.PAYMENT_PROVIDER || (paypalReady ? 'paypal' : isProd ? 'none' : 'test');
+let paymentProvider = env.PAYMENT_PROVIDER || (paypalReady ? 'paypal' : isProd && !demoMode ? 'none' : 'test');
 if (paymentProvider === 'paypal' && !paypalReady) {
   console.warn('[config] PAYMENT_PROVIDER=paypal but PAYPAL_CLIENT_ID / PAYPAL_CLIENT_SECRET / PAYPAL_WEBHOOK_ID are missing.');
   paymentProvider = isProd ? 'none' : 'test';
 }
-if (isProd && paymentProvider === 'test') {
+if (isProd && paymentProvider === 'test' && !(demoMode && aiProvider === 'mock')) {
+  // Simulated payments must never unlock a real (paid) AI model in production.
   console.warn('[config] Test payments are disabled in production. Configure PayPal (see README).');
   paymentProvider = 'none';
 }
 
 export const config = {
   isProd,
+  demoMode,
   port,
-  baseUrl: (env.BASE_URL || `http://localhost:${port}`).replace(/\/$/, ''),
+  baseUrl: (env.BASE_URL || env.RENDER_EXTERNAL_URL || `http://localhost:${port}`).replace(/\/$/, ''),
   dataDir,
   dbFile: env.DB_FILE || path.join(dataDir, 'siteforge.db'),
   uploadsDir: path.join(dataDir, 'uploads'),
